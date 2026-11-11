@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+evals/fake-calls.log
+evals/fail-thumb-once
