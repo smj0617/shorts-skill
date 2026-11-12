@@ -37,6 +37,7 @@
 - 영상 템플릿 `shorts-template/`, 낙서 도구와 규칙 `doodles/`, 곡 목록과 도구 `music/`
 - 상태와 명세 `.scratch/`
 - HyperFrames 공식 스킬(`hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` 등): `npx hyperframes skills update`로 설치한다. 부르는 자리는 `SKILL.md` "HyperFrames 스킬"
+- claude.ai 플러그인(선택): watch-video, anidoodle, Streamline Icons. 없으면 건너뛴다
 
 ## 자라는 방식
 

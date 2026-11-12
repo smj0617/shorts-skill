@@ -45,7 +45,7 @@
 3. **연락 시트**: `npx hyperframes snapshot --at <시각들>`로 장면마다 핵심 순간과 `music.hits` 시각을 8~12장 찍고 모두 Read 한다. 볼 것: 잘린 글자, 쇼츠 안전 영역(하단 1/4, 오른쪽 120px) 침범, 낙서 스토리보드 칸과 다른 낙서, 빈 화면, 엔딩 로고. 문제가 있으면 [make.md](make.md) M4처럼 렌더 없이 고치고 2부터 다시 한다. 취향이 걸린 것만 사용자에게 번호 질문으로 묻는다. 7단계에 머문다.
 4. **렌더**: 시작 시각을 적어 두고 `<영상>`에서 `npx --yes hyperframes@0.8.209 render --quality delivery -o renders/final.mp4`를 백그라운드로 돌린다(Bash `run_in_background`, 또는 effort `low` 에이전트).
 5. **새 파일인지와 음량**: `renders/final.mp4`의 수정 시각이 4의 시작 시각보다 뒤다. `ffprobe`로 1080x1920과 길이를 본다. `ffmpeg -i <영상>/renders/final.mp4 -af ebur128 -f null -`의 통합 음량(I)이 약 −16 LUFS(±1 LU)다. 벗어나면 측정값과 함께 알리고 고친 뒤 다시 렌더한다.
-6. **프레임 확인**: 3과 같은 시각마다 `ffmpeg -ss <시각> -i <영상>/renders/final.mp4 -frames:v 1 <영상>/.harness/complete/frame-<시각>.png`로 뽑아 모두 Read 하고 3의 snapshot과 비교한다. 검은 화면, 깨진 프레임, snapshot과 다른 장면이 없어야 한다.
+6. **프레임 확인**: 3과 같은 시각마다 `ffmpeg -ss <시각> -i <영상>/renders/final.mp4 -frames:v 1 <영상>/.harness/complete/frame-<시각>.png`로 뽑아 모두 Read 하고 3의 snapshot과 비교한다. 검은 화면, 깨진 프레임, snapshot과 다른 장면이 없어야 한다. Skill `watch-video`가 있으면 같은 파일을 로컬 faster-whisper로 받아 적어 `narration/script.json`의 `say`와 비교한다. 빠지거나 바뀐 말이 있으면 그 시각과 함께 알린다.
 7. PushNotification으로 "렌더 완료"를 알리고, 측정값(해상도, 길이, 통합 음량)을 한 줄로 알린다.
 
 C1 완료: 6의 프레임을 모두 봤고 이상이 없다. 이것이 게시 문턱 2다.
