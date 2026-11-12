@@ -24,6 +24,18 @@ argument-hint: "[주제 | complete | review]"
 
 한 흐름이 다른 흐름으로 넘기면 그 흐름 파일도 Read 한다.
 
+## HyperFrames 스킬 — 그 자리에서 Skill로 부른다
+
+HyperFrames 공식 스킬(`npx hyperframes skills update`로 설치·갱신)은 아래 자리에서 Skill 도구로 부른다. 한 세션에서 한 번 부른 스킬은 다시 부르지 않는다. 순서, 승인, 그림 방식, 소리 기준은 이 스킬과 `docs/agents/shorts-defaults.md`가 우선이다. HyperFrames 스킬에서는 컴포지션 규칙과 CLI 사용법만 가져오고, 그 스킬의 작업 순서(기획·스토리보드 절차)는 따르지 않는다.
+
+| 스킬 | 부르는 자리 | 쓰는 것 |
+|---|---|---|
+| `hyperframes` | make.md M2 4 애니메틱 만들기 전, M3 시작 (레이어 에이전트 브리프에도 "먼저 부를 것") | 렌더 계약(`window.__timelines`, `data-*`, seek에 안전한 움직임). 자막은 `references/captions.md`, 소리 배치는 `references/sound.md`만 필요할 때 Read 한다 |
+| `hyperframes-cli` | M2 4의 snapshot 전, complete.md C1 시작 | `snapshot`·`preview`·`check`·`render` 옵션과 렌더 실패 복구. 렌더는 영상 `package.json`에 고정된 버전으로 돌리고, 옵션이 스킬 설명과 다르면 `npx --yes hyperframes@<고정 버전> <명령> --help`가 기준이다 |
+| `hyperframes-registry` | M3 3에서 표·생성 스크립트로 안 되는 이름 붙은 효과(전환, 필름 그레인 등)를 손 스크립트로 만들기 전 | 이미 있는 블록을 찾아 쓴다. 낙서 그림과 화면 글자는 늘 쓰던 생성 스크립트로 만든다 |
+| `media-use` | 효과음이 필요할 때만 | 무료 출처(내장 효과음, Openverse CC BY는 출처 표기)만 쓴다. 나레이션은 Gemini TTS, 곡은 곡 목록·보관함 클래식, 그림은 코드 낙서 그대로 둔다. HeyGen 로그인과 유료 크레딧은 쓰지 않는다 |
+| `reverse-any-video`, `style-sampling` | 사용자가 참고 영상이나 스타일을 주며 "이것처럼"이라고 할 때만 | 그 영상의 구성·움직임을 뽑아 기획안 연출 칸에 반영한다 |
+
 ## 상태: 진행 중 쇼츠 하나, 단계 열 개
 
 쇼츠는 한 번에 하나만 진행한다. 상태는 두 곳에 있고, 새 세션은 이 둘만 읽고 이어 간다.

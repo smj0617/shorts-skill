@@ -37,7 +37,7 @@
 
 ## C1 — 최종 검수와 렌더 (단계 7, C2와 동시에)
 
-검수 하나가 막혀도 C2는 계속 진행한다. 렌더(4)는 검사·snapshot·Studio가 끝난 뒤 혼자 돌린다. 같이 돌면 메모리가 모자라 렌더가 크게 느려진다(2026-11-11 transaction: 약 10분). 렌더 옵션은 아래 4의 기본이 가장 빠르다(2026-11-11 spring-lazy 70초 영상 측정: 기본 167초, `--gpu` 209초, 조각 방식 `HF_SEGMENTED_CAPTURE` 311초이고 조각이 하나뿐이라 고친 뒤 `--resume`도 288초).
+시작할 때 이 세션에서 아직 부르지 않았으면 Skill `hyperframes-cli`를 부른다(SKILL.md "HyperFrames 스킬"). 렌더가 실패하면 그 스킬의 복구 절을 먼저 따른다. 검수 하나가 막혀도 C2는 계속 진행한다. 렌더(4)는 검사·snapshot·Studio가 끝난 뒤 혼자 돌린다. 같이 돌면 메모리가 모자라 렌더가 크게 느려진다(2026-11-11 transaction: 약 10분). 렌더 옵션은 아래 4의 기본이 가장 빠르다(2026-11-11 spring-lazy 70초 영상 측정: 기본 167초, `--gpu` 209초, 조각 방식 `HF_SEGMENTED_CAPTURE` 311초이고 조각이 하나뿐이라 고친 뒤 `--resume`도 288초).
 
 1. **다시 쓸 렌더인지 본다.** `renders/final.mp4`가 있고 아래 명령이 아무것도 찍지 않으면 2~5를 건너뛰고 6으로 간다.
    `find <영상> -type f -newer <영상>/renders/final.mp4 -not -path '*/renders/*' -not -path '*/node_modules/*' -not -path '*/.harness/*' -not -path '*/handoff-notes/*' -not -name 'publish*.json'`

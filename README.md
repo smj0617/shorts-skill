@@ -36,6 +36,7 @@
 - 게시 명령 `publish/`(YouTube Data API, 비공개로 올린 뒤 공개·예약), 게시 목록 `published.md`
 - 영상 템플릿 `shorts-template/`, 낙서 도구와 규칙 `doodles/`, 곡 목록과 도구 `music/`
 - 상태와 명세 `.scratch/`
+- HyperFrames 공식 스킬(`hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` 등): `npx hyperframes skills update`로 설치한다. 부르는 자리는 `SKILL.md` "HyperFrames 스킬"
 
 ## 자라는 방식
 

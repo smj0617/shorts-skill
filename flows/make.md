@@ -41,7 +41,7 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
 3. **움직임 표.** 계획을 `storyboard.json`의 표로 옮긴다: 상태 그림이 여럿인 사물은 맨 위 `cast`, 장면마다 `keys`(형식은 `<영상>/compositions/keys.py` 첫 주석, 예는 `<영상>/storyboard/keys-example.json`). 에이전트 없이 Claude가 쓴다. 표에 없는 낙서도 cue 말에 저절로 그려지므로 움직이는 칸만 적는다.
    - 움직임 틀은 제한이 아니라 자주 쓰는 동작을 빠르게 조합하는 부품이다. 주제와 대본에 맞는 연출이 부품에 없으면 줄이지 말고 `<영상>/compositions/moves.py`에 몇 줄짜리 `@action("이름")`으로 더해 표에서 쓴다(예: `shake`, `spin`, `pulse`). 그래도 안 되는 무대만 첫 장면에 `"script"`를 적고 M3에서 손 스크립트로 짠다.
    - 거친 움직임 정지 시트(`motion-<장면 id>.json`)는 만들지 않는다. 애니메틱이 대신한다.
-4. **애니메틱을 만들고 스스로 맞춰 본다.** `<영상>`에서 `python compositions/keys.py --animatic` → `.harness/animatic/`(떨림 없음, 글자·엔딩 없음, 나레이션·곡 있음, 왼쪽 위에 장면 이름). 1초 안팎이고, 출력의 줄마다 표 한 줄의 실제 시각이 나온다. 계획의 cue 시각들로 `.harness/animatic`에서 `npx hyperframes snapshot --at ...`을 찍어 모음(contact sheet)을 Read 하고, 계획과 다른 칸은 표 값을 고쳐 다시 돌린다.
+4. **애니메틱을 만들고 스스로 맞춰 본다.** Skill `hyperframes`와 `hyperframes-cli`를 먼저 부른다(SKILL.md "HyperFrames 스킬"). `<영상>`에서 `python compositions/keys.py --animatic` → `.harness/animatic/`(떨림 없음, 글자·엔딩 없음, 나레이션·곡 있음, 왼쪽 위에 장면 이름). 1초 안팎이고, 출력의 줄마다 표 한 줄의 실제 시각이 나온다. 계획의 cue 시각들로 `.harness/animatic`에서 `npx hyperframes snapshot --at ...`을 찍어 모음(contact sheet)을 Read 하고, 계획과 다른 칸은 표 값을 고쳐 다시 돌린다.
 5. **보이기 전 점검.** 애니메틱 모음, 낙서 시트, 움직임 계획을 SKILL.md "보이기 전 점검"에 돌린다(점검표 "그림"·"낙서 스토리보드" 절).
 6. **보이고 바로 넘어간다.** `active.py stage 4`를 부르고, 모음(이미지)과 `cd .harness/animatic && npx hyperframes preview`, 움직임 계획(칸 번호마다 한 줄), 빨간 펜으로 쓸 말(`red_words`)과 고른 까닭 한 줄을 보이고 PushNotification으로 알린다. "연출 의견이 있으면 시각을 붙여 주세요, 기다리지 않고 제작을 시작합니다"라고 붙인다. 이어서 기다리지 않고:
    - 첫 영상이면(답 없는 번호는 추천대로 정한다):
@@ -66,7 +66,7 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
 
 ## M3 — 제작 (단계 5)
 
-`<영상>/AGENTS.md`(HyperFrames 규칙)와 제작 기본값 문서의 "에이전트 운용"을 먼저 읽는다.
+`<영상>/AGENTS.md`(HyperFrames 규칙)와 제작 기본값 문서의 "에이전트 운용"을 먼저 읽고, 이 세션에서 아직 부르지 않았으면 Skill `hyperframes`·`hyperframes-cli`를 부른다(SKILL.md "HyperFrames 스킬"). 레이어 에이전트 브리프에는 "작업 전에 Skill `hyperframes`를 부를 것"을 넣는다. 표·생성 스크립트로 안 되는 이름 붙은 효과는 손 스크립트 전에 Skill `hyperframes-registry`로 찾아본다.
 
 레이어 html은 손으로 쓰지 않는다. 모두 생성 스크립트가 만들고, 고칠 때도 스크립트나 그 입력(`storyboard.json`, 낙서 설명, `video.json`)을 고쳐 다시 돌린다. 도구 설명의 원본은 `<영상>/README.md` "만드는 순서" 5~7과 각 스크립트 첫 주석이다. 시각은 모두 `narration/timing.json`에서 읽으므로, 다시 녹음하면 스크립트만 다시 돌린다.
 
