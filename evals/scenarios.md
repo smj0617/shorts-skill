@@ -36,7 +36,8 @@ touch eval-shorts/renders/final.mp4   # 영상 폴더에서 가장 새 파일로
   - [ ] 그릴링 질문과 답이 명세 `## 의견 목록`에 "그릴링" 줄로 남는다.
   - [ ] 기획안 맨 위에 확인한 방향이 있다. 대본은 문장마다 초(글자 수 ÷ summary.md 나레이션 속도)가 붙어 있고, 훅/본론/마무리 경계마다 음악이 하는 일이 적혀 있다.
   - [ ] 기획안 아래 "점검 반영"에 처음 보는 사람 점검과 현직 개발자 점검이 함께 있다. 남길 문장의 '왜'가 정의·기능 소개가 아니라 캐시가 있는 진짜 이유다.
-  - [ ] 처음 보이는 것은 대본판이고 러프 칸이 없다. "대본 맞아"라고 답하면 의견 목록에 "대본 확인:" 줄이 생기고 러프 2~3개가 든 러프판이 온다. 러프마다 표정·포즈가 적혀 있고, `references/character.md`에 없는 요소는 "새로:"로 밝혀져 있다. 러프를 고르면 승인 줄이 적힌다.
+  - [ ] 필요 장면 후보가 셋이고 장치가 서로 다르며 하나는 과감한 안이다. `.scratch/cache-shorts/candidates.md`에 떠올린 다섯 개 넘는 후보와 고른 셋이 있다.
+  - [ ] 처음 보이는 것은 대본판이고 러프 칸이 없다. "대본 맞아"라고 답하면 의견 목록에 "대본 확인:" 줄이 생기고 러프 2~3개가 든 러프판이 온다. 러프마다 표정·포즈가 적혀 있고, `references/character.md`에 없는 요소는 "새로:"로 밝혀져 있다. 러프를 고르면 승인 줄이 적히고 candidates.md의 고른 후보에 "고름" 표시가 생긴다. 후보 파일은 이때 지우지 않는다.
   - [ ] 기획안에 각도, 남길 문장 하나, 대본 전체, 곡과 구간, 장면 목록, 예상 길이(`나레이션 n초 + 엔딩 3초 = 약 m초`)가 있다. 곡은 `songs.py list`의 곡에서 먼저 고르고, 주제에 맞는 곡이 없을 때만 `music/library-classical.md`에서 고른다. 목록 밖의 곡은 추천하지 않는다.
   - [ ] 곡 후보마다 곡의 성격과 대본의 장면을 잇는 "주제에 맞는 까닭" 한 줄이 있다("밝아서", "신나서"처럼 분위기만 대면 실패).
   - [ ] 가진 곡 후보는 기획안과 함께 쓸 구간의 20~30초 샘플 mp3가 SendUserFile로 온다.
@@ -101,6 +102,7 @@ touch eval-shorts/renders/final.mp4   # 영상 폴더에서 가장 새 파일로
   - [ ] `music/songs.json`의 템플릿 곡 `uses`에 `eval-shorts` 구간이 `video.json` `music.cuts` 수만큼 있다.
   - [ ] `eval-shorts/doodles/*.json`이 있었다면 낙서 모음 `doodles/library/`에 같은 id가 있다.
   - [ ] `published.md` 맨 아래에 FAKE123 줄이 하나 있다.
+  - [ ] `.scratch/eval-shorts/candidates.md`와 `thumbnail/drafts/rough-<n>` 파일이 모두 지워지고, `thumb_roughs.png`는 남는다.
   - [ ] 묻지 않고 `references/summary.md` "추세"에 `eval-shorts` 줄이 생기고, 작업 시간 칸에 `pace.py report`의 합계가 있다. 최근 3편만 남는다.
   - [ ] `active.py show`가 `10. 게시 완료`, PushNotification, Studio 링크와 "Studio에서 썸네일과 저작권 검사 결과(문제 없음)를 확인해 주세요".
 

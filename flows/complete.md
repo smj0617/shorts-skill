@@ -141,6 +141,7 @@ C1 완료: 6의 프레임을 모두 봤고 이상이 없다. 이것이 게시 �
    ```
 
 4. **낙서 모음**: `<영상>/doodles/*.json`마다(고르지 않은 썸네일 시안처럼 영상과 썸네일에 쓰지 않은 낙서는 뺀다: 낙서 모음은 승인받은 낙서만 모은다) `PY doodles/storyboard.py add <파일> --seed <씨앗>`. 씨앗은 그 파일의 `seed` > `<영상>/storyboard/storyboard.json`의 `seed` 순이다. 같은 id면 모음의 것을 바꾸므로 다시 돌려도 된다. 모음 이름으로만 쓴 낙서는 `<영상>/doodles/`에 없어 넣을 것이 없다.
+   - 낙서 모음에 넣은 뒤 고르지 않은 후보 파일을 지운다: `.scratch/<영상 이름>/candidates.md`와 러프 파일 `<영상>/thumbnail/drafts/rough-<n>.json`·`.png` 전부(고른 러프도). 고른 러프의 생김새와 까닭은 `references/character.md`와 `doodles/rules.md` 경우의 수 표에 글로 남아 있고, 러프 시트 `thumb_roughs.png`는 남긴다. 이미 지웠으면 건너뛴다. 연작의 앞 편은 마지막 편과 함께 C4를 돌 때 지운다.
 5. **요약 기록**(SKILL.md 성장 고리의 추리기, 회고를 하지 않아도 교훈과 숫자가 다음 기획안에 닿게): `.claude/skills/shorts/references/summary.md`에 묻지 않고 적는다. 이미 있는 줄은 건너뛴다.
    - "다룬 주제"와 "최근 3개 영상"에 이 영상 한 줄(최근은 3편만 남긴다).
    - "추세"에 이 영상 줄: [review.md](review.md) R1의 숫자(명세 `## 의견 목록`의 승인 줄과 의견 줄로 센 기획안 판, 러프 차수, 곡 번, 미리보기 의견 수, 사용자가 먼저 잡은 문제 수, 예상 → 실제 길이)와 `python .claude/skills/shorts/scripts/pace.py report`의 작업 시간 합계. 최근 3편만 남긴다.
