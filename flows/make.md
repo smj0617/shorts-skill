@@ -41,7 +41,6 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
    - 주인공 연기: 주인공이 움직이는 칸은 부위마다 때와 양을 달리한다(머리가 먼저, 팔이 뒤따라, 양팔·양눈도 조금씩 다르게). 표정은 예비 동작 → 찌그러짐 → 새 얼굴 → 자리 잡기를 거쳐 바뀐다(hyperframes 스킬의 `references/types/character.md`, stream-1 미리보기 "통째로 말고 부위가 따로 자연스럽게").
 3. **움직임 표.** 계획을 `storyboard.json`의 표로 옮긴다: 상태 그림이 여럿인 사물은 맨 위 `cast`, 장면마다 `keys`(형식은 `<영상>/compositions/keys.py` 첫 주석, 예는 `<영상>/storyboard/keys-example.json`). 에이전트 없이 Claude가 쓴다. 표에 없는 낙서도 cue 말에 저절로 그려지므로 움직이는 칸만 적는다.
    - 움직임 틀은 제한이 아니라 자주 쓰는 동작을 빠르게 조합하는 부품이다. 주제와 대본에 맞는 연출이 부품에 없으면 줄이지 말고 `<영상>/compositions/moves.py`에 몇 줄짜리 `@action("이름")`으로 더해 표에서 쓴다(예: `shake`, `spin`, `pulse`). 그래도 안 되는 무대만 첫 장면에 `"script"`를 적고 M3에서 손 스크립트로 짠다.
-   - 곡선(`ease`)은 역할로 고른다: 나타나기는 끝이 길게 감속(`expo.out`, `power4.out`), 사라지기는 나타나기보다 40~50% 짧게 가속(`power3.in`), 카메라(`frame`)·옮기기는 양끝 감속(`power2.inOut`), 다음 움직임은 앞 움직임이 30~50% 됐을 때 겹쳐 시작한다. 같은 곡선을 모든 줄에 쓰면 기계적으로 보인다(hyperframes 스킬 `references/motion.md` "Motion craft"). 표 줄의 `ease`와 `moves.py`에 더하는 동작에 쓴다.
    - 움직임은 애니메틱 하나로 확인한다(예전 거친 움직임 정지 시트 `motion-<장면 id>.json`의 자리).
 4. **애니메틱을 만들고 스스로 맞춰 본다.** Skill `hyperframes`와 `hyperframes-cli`를 먼저 부른다([references/tools.md](../references/tools.md)). `<영상>`에서 `python compositions/keys.py --animatic` → `.harness/animatic/`(떨림 없음, 글자·엔딩 없음, 나레이션·곡 있음, 왼쪽 위에 장면 이름). 1초 안팎이고, 출력의 줄마다 표 한 줄의 실제 시각이 나온다. 계획의 cue 시각들로 `.harness/animatic`에서 `npx hyperframes snapshot --at ...`을 찍어 모음(contact sheet)을 Read 하고, 계획과 다른 칸은 표 값을 고쳐 다시 돌린다.
 5. **보이기 전 점검.** 애니메틱 모음, 낙서 시트, 움직임 계획을 SKILL.md "보이기 전 점검"에 돌린다(점검표 "그림"·"낙서 스토리보드" 절).
