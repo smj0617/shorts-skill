@@ -9,6 +9,8 @@ start S4(영상 폴더 만들기) 다음, S5(기획안) 전에 한다. 모드, �
 - 곡 후보 추리기(effort `medium`): `python music/songs.py list`와 보관함 클래식 목록 `music/library-classical.md`에서 이 개념의 특성과 짜임이 닮은 곡 2~3개와 까닭 한 줄(summary.md 교훈의 곡 줄).
 - 사실 확인 코드(effort `medium`): 주제의 핵심 동작을 확인하는 작은 실행 코드를 `IdeaProjects/<주제>-check`에 만든다(제작 기본값 "시간을 줄이는 습관"). 대본이 서면 S5에서 대본의 문장에 맞춰 더한다.
 
+**참고 영상**: 사용자가 참고 영상이나 스타일을 주며 "이것처럼"이라고 하면 [references/tools.md](../references/tools.md)의 `watch-video`·`reverse-any-video` 줄대로 그 영상의 말과 구성을 뽑아, 각도와 필요 장면 후보의 재료로 쓴다.
+
 ## G1 — 첫 실행 준비
 
 묻지 않고 할 수 있는 것부터 한다.

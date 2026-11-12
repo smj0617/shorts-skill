@@ -24,25 +24,9 @@ argument-hint: "[주제 | complete | review]"
 
 한 흐름이 다른 흐름으로 넘기면 그 흐름 파일도 Read 한다.
 
-## HyperFrames 스킬 — 그 자리에서 Skill로 부른다
+## 도구 스킬
 
-HyperFrames 공식 스킬(`npx hyperframes skills update`로 설치·갱신)은 아래 자리에서 Skill 도구로 부른다. 한 세션에서 한 번 부른 스킬은 다시 부르지 않는다. 순서, 승인, 그림 방식, 소리 기준은 이 스킬과 `docs/agents/shorts-defaults.md`가 우선이다. HyperFrames 스킬에서는 컴포지션 규칙과 CLI 사용법만 가져오고, 그 스킬의 작업 순서(기획·스토리보드 절차)는 따르지 않는다.
-
-| 스킬 | 부르는 자리 | 쓰는 것 |
-|---|---|---|
-| `hyperframes` | make.md M2 4 애니메틱 만들기 전, M3 시작 (레이어 에이전트 브리프에도 "먼저 부를 것") | 렌더 계약(`window.__timelines`, `data-*`, seek에 안전한 움직임). 자막은 `references/captions.md`, 소리 배치는 `references/sound.md`만 필요할 때 Read 한다 |
-| `hyperframes-cli` | M2 4의 snapshot 전, complete.md C1 시작 | `snapshot`·`preview`·`check`·`render` 옵션과 렌더 실패 복구. 렌더는 영상 `package.json`에 고정된 버전으로 돌리고, 옵션이 스킬 설명과 다르면 `npx --yes hyperframes@<고정 버전> <명령> --help`가 기준이다 |
-| `hyperframes-registry` | M3 3에서 표·생성 스크립트로 안 되는 이름 붙은 효과(전환, 필름 그레인 등)를 손 스크립트로 만들기 전 | 이미 있는 블록을 찾아 쓴다. 낙서 그림과 화면 글자는 늘 쓰던 생성 스크립트로 만든다 |
-| `media-use` | 효과음이 필요할 때만 | 무료 출처(내장 효과음, Openverse CC BY는 출처 표기)만 쓴다. 나레이션은 Gemini TTS, 곡은 곡 목록·보관함 클래식, 그림은 코드 낙서 그대로 둔다. HeyGen 로그인과 유료 크레딧은 쓰지 않는다 |
-| `reverse-any-video`, `style-sampling` | 사용자가 참고 영상이나 스타일을 주며 "이것처럼"이라고 할 때만 | 그 영상의 구성·움직임을 뽑아 기획안 연출 칸에 반영한다 |
-
-claude.ai 플러그인 스킬도 같은 방식으로 부른다. Skill 목록에서는 이름 앞에 플러그인 id가 붙으므로(`<id>:anidoodle`) 끝 이름으로 찾는다. 목록에 없으면 건너뛰고 늘 하던 대로 한다.
-
-| 스킬 | 부르는 자리 | 쓰는 것 |
-|---|---|---|
-| `anidoodle` | make.md M1 2, 모음에 없는 사물을 새로 그리기 전 | 코드 낙서로 사물의 모양과 획 순서를 빨리 잡는다. 결과는 늘 쓰던 낙서 설명(`<영상>/doodles/<id>.json`)으로 옮기고, 종이·펜·색은 `doodles/rules.md`를 따른다. 그 스킬의 31가지 스타일이나 곡 만들기는 쓰지 않는다 |
-| `streamline-expert` (Streamline Icons) | M1 2, anidoodle과 같은 자리 | 사물의 뼈대 모양을 오픈소스 세트(Lucide, Heroicons, Phosphor, Font Awesome Free)에서만 가져와 낙서 획으로 다시 그린다. Streamline 유료 세트와 아이콘 그대로 붙이기는 쓰지 않는다 |
-| `watch-video` | complete.md C1 6, 그릴링에서 사용자가 참고 영상을 줄 때 | 렌더한 영상이나 참고 영상의 말을 받아 적고 프레임을 뽑는다. 받아 적기는 로컬 faster-whisper만 쓰고, Groq·OpenAI 같은 호스팅 쪽은 쓰지 않는다 |
+HyperFrames 공식 스킬(컴포지션 규칙, CLI)과 claude.ai 플러그인 스킬(낙서, 영상 받아 적기)은 흐름 파일이 부르는 자리에서 [references/tools.md](references/tools.md)를 따른다. 순서, 승인, 그림 방식, 소리 기준은 이 스킬과 제작 기본값이 정한다.
 
 ## 상태: 진행 중 쇼츠 하나, 단계 열 개
 
@@ -59,8 +43,8 @@ python .claude/skills/shorts/scripts/active.py show | start <영상 이름> | st
 
 | 번호 | 단계 | 기다리는 것 | 다음 할 일 | 흐름 |
 |---|---|---|---|---|
-| 1 | 기획 | 사용자 답·Claude | 그릴링으로 묻고, 기획안(제작 설계)과 주인공 사물·썸네일 러프 시트를 쓴다 | grill, start S5 |
-| 2 | 기획안 승인 대기 | 사용자 승인 | 수정 요청을 반영하거나, 러프 고르기와 승인을 받는다 | start S5 |
+| 1 | 기획 | 사용자 답·Claude | 그릴링으로 묻고, 기획안(제작 설계)의 대본판을 쓴다 | grill, start S5 |
+| 2 | 기획안 승인 대기 | 사용자 답·승인 | 대본판 의견을 반영하고, 대본이 확인되면 러프 2~3개로 러프판을 보여 러프 고르기와 승인을 받는다 | start S5 |
 | 3 | 곡 받기와 녹음 | 사용자 "받았어"·Claude 녹음 | 곡 받기, 녹음, 낙서 그리기를 동시에 진행하고 타격점을 잰다 | start S6, make M1 |
 | 4 | 애니메틱 연출 확인 | Claude(기다리지 않음) | 움직임 표와 애니메틱을 만들어 점검하고 보인 뒤 바로 제작으로 넘어간다. 오는 연출 의견은 표 값으로 반영한다 | make M2 |
 | 5 | 제작 | Claude | 레이어별로 나눠 만들고 루트에 통합한다. 묻지 않는다 | make M3 |
@@ -92,7 +76,7 @@ python .claude/skills/shorts/scripts/active.py show | start <영상 이름> | st
 
 1. **쌓기**: 만드는 동안 의견과 결정을 원본 기록에 적는다(아래 "의견 기록").
 2. **추리기**: 게시 완료(complete C4)와 회고 때 원본 기록에서 출발점 파일로 추린다. 출발점은 다음 영상이 처음부터 읽고 시작하는 곳이라 길이를 지킨다.
-3. **올리기**: 같은 교훈이 두 영상에서 나오면 규칙 문서로 올리자고 사용자에게 제안하고, "네"면 올린다.
+3. **올리기**: 같은 교훈이 두 영상에서 나오면 규칙 문서로 올리자고 사용자에게 제안하고, "네"면 올린다. 올리는 줄은 할 일("~한다")로 쓴다(README "자라는 방식").
 4. **비우기**: 규칙이 된 줄은 출발점에서 빼고, 원본 기록의 그 줄 끝에 "→ <올린 곳>으로 올림"을 붙인다.
 
 | 영역 | 쌓는 곳 (원본 기록) | 출발점 (다음 영상이 읽음) | 올리는 곳 (규칙) |
@@ -103,7 +87,7 @@ python .claude/skills/shorts/scripts/active.py show | start <영상 이름> | st
 | 제작 | history.md의 "오래 걸린 수정" | summary.md 교훈 | 제작 기본값 "시간을 줄이는 습관", 흐름 파일 |
 | 그릴링 | history.md의 "그릴링" 줄 | — | [flows/grill.md](flows/grill.md)의 질문 |
 
-나아지는지는 숫자로 본다. 회고가 승인 줄(아래 "승인 문턱")과 의견 목록으로 영상마다 판 수, 미리보기 의견 수, 사용자가 먼저 잡은 문제 수, 예상 길이와 실제 길이를 history.md에 적고, summary.md "추세"가 최근 3편을 나란히 둔다.
+나아지는지는 숫자로 본다. 게시 완료(complete C4)가 승인 줄(아래 "승인 문턱")과 의견 목록, 속도 장부로 영상마다 판 수, 미리보기 의견 수, 사용자가 먼저 잡은 문제 수, 예상 길이와 실제 길이, 작업 시간을 summary.md "추세"에 적고(회고를 하지 않아도 쌓인다), 회고가 그 숫자를 답과 함께 history.md에 남긴다. "추세"는 최근 3편을 나란히 둔다.
 
 기록 파일은 `.claude/skills/shorts/references/`에 있다. 토큰을 아끼려고 늘 읽는 요약과 평소에 읽지 않는 상세를 나눴다.
 

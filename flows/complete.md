@@ -37,7 +37,7 @@
 
 ## C1 — 최종 검수와 렌더 (단계 7, C2와 동시에)
 
-시작할 때 이 세션에서 아직 부르지 않았으면 Skill `hyperframes-cli`를 부른다(SKILL.md "HyperFrames 스킬"). 렌더가 실패하면 그 스킬의 복구 절을 먼저 따른다. 검수 하나가 막혀도 C2는 계속 진행한다. 렌더(4)는 검사·snapshot·Studio가 끝난 뒤 혼자 돌린다. 같이 돌면 메모리가 모자라 렌더가 크게 느려진다(2026-11-11 transaction: 약 10분). 렌더 옵션은 아래 4의 기본이 가장 빠르다(2026-11-11 spring-lazy 70초 영상 측정: 기본 167초, `--gpu` 209초, 조각 방식 `HF_SEGMENTED_CAPTURE` 311초이고 조각이 하나뿐이라 고친 뒤 `--resume`도 288초).
+시작할 때 이 세션에서 아직 부르지 않았으면 Skill `hyperframes-cli`를 부른다([references/tools.md](../references/tools.md)). 렌더가 실패하면 그 스킬의 복구 절을 먼저 따른다. 검수 하나가 막혀도 C2는 계속 진행한다. 렌더(4)는 검사·snapshot·Studio가 끝난 뒤 혼자 돌린다. 같이 돌면 메모리가 모자라 렌더가 크게 느려진다(2026-11-11 transaction: 약 10분). 렌더 옵션은 아래 4의 기본이 가장 빠르다(2026-11-11 spring-lazy 70초 영상 측정: 기본 167초, `--gpu` 209초, 조각 방식 `HF_SEGMENTED_CAPTURE` 311초이고 조각이 하나뿐이라 고친 뒤 `--resume`도 288초).
 
 1. **다시 쓸 렌더인지 본다.** `renders/final.mp4`가 있고 아래 명령이 아무것도 찍지 않으면 2~5를 건너뛰고 6으로 간다.
    `find <영상> -type f -newer <영상>/renders/final.mp4 -not -path '*/renders/*' -not -path '*/node_modules/*' -not -path '*/.harness/*' -not -path '*/handoff-notes/*' -not -name 'publish*.json'`
@@ -141,7 +141,10 @@ C1 완료: 6의 프레임을 모두 봤고 이상이 없다. 이것이 게시 �
    ```
 
 4. **낙서 모음**: `<영상>/doodles/*.json`마다(고르지 않은 썸네일 시안처럼 영상과 썸네일에 쓰지 않은 낙서는 뺀다: 낙서 모음은 승인받은 낙서만 모은다) `PY doodles/storyboard.py add <파일> --seed <씨앗>`. 씨앗은 그 파일의 `seed` > `<영상>/storyboard/storyboard.json`의 `seed` 순이다. 같은 id면 모음의 것을 바꾸므로 다시 돌려도 된다. 모음 이름으로만 쓴 낙서는 `<영상>/doodles/`에 없어 넣을 것이 없다.
-5. **요약 기록**(SKILL.md 성장 고리의 추리기, 회고를 하지 않아도 교훈이 다음 기획안에 닿게): `.claude/skills/shorts/references/summary.md`의 "다룬 주제"와 "최근 3개 영상"에 이 영상 한 줄을 더한다(최근은 3편만 남긴다). 기획 피드백 `docs/agents/planning-feedback.md`의 이 영상 제목 아래 "다음부터" 줄을 summary.md 교훈으로 추린다(review R5의 교훈 규칙대로, 10줄 안). 이미 있는 줄은 건너뛴다.
+5. **요약 기록**(SKILL.md 성장 고리의 추리기, 회고를 하지 않아도 교훈과 숫자가 다음 기획안에 닿게): `.claude/skills/shorts/references/summary.md`에 묻지 않고 적는다. 이미 있는 줄은 건너뛴다.
+   - "다룬 주제"와 "최근 3개 영상"에 이 영상 한 줄(최근은 3편만 남긴다).
+   - "추세"에 이 영상 줄: [review.md](review.md) R1의 숫자(명세 `## 의견 목록`의 승인 줄과 의견 줄로 센 기획안 판, 러프 차수, 곡 번, 미리보기 의견 수, 사용자가 먼저 잡은 문제 수, 예상 → 실제 길이)와 `python .claude/skills/shorts/scripts/pace.py report`의 작업 시간 합계. 최근 3편만 남긴다.
+   - 기획 피드백 `docs/agents/planning-feedback.md`의 이 영상 제목 아래 "다음부터" 줄을 summary.md 교훈으로 추린다(review R5의 교훈 규칙대로, 10줄 안).
 6. `active.py stage 10`을 부른다.
 7. 연작은 마지막 편의 C4가 끝났을 때 한 번만(9단계로 남았던 편을 나중에 다시 올려 끝냈으면 그 실행에서 그 편 하나로 한 번): PushNotification으로 "업로드 완료"를 알리고, 대화에 편마다 Studio 편집 주소, 영상 주소, 공개·예약 일정, 게시 목록 `published.md`에 줄이 생겼다는 것을 알린다. 9단계로 남은 편이 있으면 함께 알린다. 사용자 할 일 한 가지: "Studio에서 썸네일과 저작권 검사 결과(문제 없음)를 확인해 주세요." 퍼블릭 도메인이나 CC BY 녹음도 Content ID가 잘못 걸릴 수 있다. 저작권 주장이 보이면 알려 달라고 덧붙인다(예약 편은 예약 시각 전에 비공개로 돌린다). 그 곡은 곡 목록에 그 사실을 적고, 다음부터는 추천하지 않는다. 끝에 한 줄 덧붙인다: "기억이 생생할 때 '회고하자'라고 하시면 제작 회고를 해요."
 

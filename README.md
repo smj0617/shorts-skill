@@ -24,7 +24,7 @@
 |---|---|
 | `SKILL.md` | 진입점: 분기, 단계 열 개, 그릴링 역할, 성장 고리, 모든 흐름에 걸리는 규칙 |
 | `flows/` | 흐름별 절차: 시작(start), 그릴링(grill), 제작(make), 완성과 게시(complete), 회고(review), 상태(status) |
-| `references/` | 영상마다 자라는 출발점: 교훈 요약(summary), 영상별 회고(history), 캐릭터(character) |
+| `references/` | 영상마다 자라는 출발점: 교훈 요약(summary), 영상별 회고(history), 캐릭터(character). 가끔 가는 절차: 도구 스킬(tools), 곡 받기(music) |
 | `scripts/` | 상태 기록 도우미(active), 속도 감시(pace), 구간 병렬 검사(check_parallel)와 테스트 |
 | `evals/` | 손으로 돌리는 흐름 시나리오와 평가용 가짜 유튜브 클라이언트 |
 
@@ -36,9 +36,11 @@
 - 게시 명령 `publish/`(YouTube Data API, 비공개로 올린 뒤 공개·예약), 게시 목록 `published.md`
 - 영상 템플릿 `shorts-template/`, 낙서 도구와 규칙 `doodles/`, 곡 목록과 도구 `music/`
 - 상태와 명세 `.scratch/`
-- HyperFrames 공식 스킬(`hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` 등): `npx hyperframes skills update`로 설치한다. 부르는 자리는 `SKILL.md` "HyperFrames 스킬"
+- HyperFrames 공식 스킬(`hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` 등): `npx hyperframes skills update`로 설치한다. 부르는 자리는 `references/tools.md`
 - claude.ai 플러그인(선택): watch-video, anidoodle, Streamline Icons. 없으면 건너뛴다
 
 ## 자라는 방식
 
 영상마다 의견과 결정을 원본 기록에 쌓고, 게시와 회고 때 출발점(`references/`)으로 추리고, 두 영상에서 되풀이되면 규칙 문서로 올린다(`SKILL.md` "성장 고리").
+
+규칙 줄을 고치거나 더할 때는 막을 일보다 할 일("~한다")로 쓴다. 금지("~하지 않는다")는 되돌리기 어려운 일(게시, 내려받기, TTS 한도)의 문턱에만 할 일과 함께 남긴다. 금지를 적으면 그 행동이 오히려 떠오르기 때문이다.

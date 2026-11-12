@@ -7,7 +7,7 @@
 1. **낙서 모음 먼저.** 기획안 장면 목록의 "화면에 그릴 사물"마다 `doodles/library/*.json`의 `name`·`id`를 본다.
    - 같은 사물이 있으면 장면 목록에 `{"doodle": "<이름>"}`으로 그대로 쓴다. 모음에 저장된 씨앗이 쓰인다.
    - 조금 고쳐 쓸 것이면 그 json을 `<영상>/doodles/`로 복사해 고친다. `id`, 획 id, `seed`는 그대로 둔다. 그래야 고치지 않은 획이 모음과 같게 그려진다.
-2. **없는 사물만 새로 그린다.** 사물 하나에 낙서 설명 하나, `<영상>/doodles/<id>.json`. 손으로 좌표를 짜기 전에 Skill `anidoodle`로 모양과 획 순서를 잡거나, Skill `streamline-expert`로 오픈소스 아이콘을 뼈대로 가져와 낙서 획으로 다시 그린다(SKILL.md "HyperFrames 스킬" 아래 플러그인 표, 러프 시간을 줄이려는 것이다). 개념은 보면 바로 알 수 있는 주제의 사물로 그리고, 반복 캐릭터는 두지 않는다. 주인공 사물은 기획안에서 고른 러프의 사물과 구도를 따라 공들여 그린다(훅의 공들인 모습 하나와 뒤 장면의 상태 그림, 제작 기본값 "그림"). 주인공은 `<영상>/doodles/hero.py` 한 곳에서 그리고 상태 그림은 `hero.pose(...)`·`hero.emit(...)`으로 뽑는다. 낙서 갈래를 나눠도 그리기 함수를 복사하지 않는다(transaction-shorts: 세 벌로 복사돼 고칠 때마다 어긋났다). 영상 낙서는 `lighten.write`가 무게 상한을 넘으면 쓰지 않고 멈추므로, 그 자리에서 빗금을 성기게 하거나 채움 면으로 바꾼다. 낙서를 스크립트로 그리면 표정·자세처럼 의견이 자주 오는 값은 M3 3의 "자주 바뀌는 값"처럼 스크립트 위쪽 상수로 둔다.
+2. **없는 사물만 새로 그린다.** 사물 하나에 낙서 설명 하나, `<영상>/doodles/<id>.json`. 손으로 좌표를 짜기 전에 Skill `anidoodle`로 모양과 획 순서를 잡거나, Skill `streamline-expert`로 오픈소스 아이콘을 뼈대로 가져와 낙서 획으로 다시 그린다([references/tools.md](../references/tools.md), 러프 시간을 줄이려는 것이다). 개념은 보면 바로 알 수 있는 주제의 사물로 그리고, 반복 캐릭터는 두지 않는다. 주인공 사물은 기획안에서 고른 러프의 사물과 구도를 따라 공들여 그린다(훅의 공들인 모습 하나와 뒤 장면의 상태 그림, 제작 기본값 "그림"). 주인공은 `<영상>/doodles/hero.py` 한 곳에서 그리고 상태 그림은 `hero.pose(...)`·`hero.emit(...)`으로 뽑는다. 낙서 갈래를 나눠도 그리기 함수를 복사하지 않는다(transaction-shorts: 세 벌로 복사돼 고칠 때마다 어긋났다). 영상 낙서는 `lighten.write`가 무게 상한을 넘으면 쓰지 않고 멈추므로, 그 자리에서 빗금을 성기게 하거나 채움 면으로 바꾼다. 낙서를 스크립트로 그리면 표정·자세처럼 의견이 자주 오는 값은 M3 3의 "자주 바뀌는 값"처럼 스크립트 위쪽 상수로 둔다.
 3. **장면 목록** `<영상>/storyboard/storyboard.json`을 쓴다. 키의 원본은 `shorts-template/compositions/make_words.py`(화면 글자)와 `make_scene_a.py`(`cue`) 첫 주석이고, 모든 키를 쓴 예는 `shorts-template/compositions/test_compositions.py`의 `board`다.
    - 기획안 장면 하나에 `scenes` 한 칸. `id`는 기획안 장면 id(= `narration/script.json`의 장면 id)다. 다르면 장면 레이어가 그 장면을 말없이 건너뛴다. `name`은 그 장면의 핵심 순간이다.
    - 화면 글자: `toc`는 장면마다 `""`로 둔다(목차는 쓰지 않는다, ADR-0002. 빼면 `text`가 목차로 나온다). `text`·`keyword`(핵심 키워드)는 이름 붙이는 장면에만 기술 이름으로 두고, 나레이션이 그 말을 할 때 써진다. 이름표는 `labels`(`{"text": "DB", "doodle": "<낙서 파일 이름>", "word": "<이름표가 나오는 말>"}`).
@@ -40,8 +40,8 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
    - 이름 붙이기: 그 칸이 곡의 가장 큰 타격점에 있고, 그 순간 빨간 펜 핵심 키워드가 써지고 이름표가 그림에 붙는다(제작 기본값 "소리").
 3. **움직임 표.** 계획을 `storyboard.json`의 표로 옮긴다: 상태 그림이 여럿인 사물은 맨 위 `cast`, 장면마다 `keys`(형식은 `<영상>/compositions/keys.py` 첫 주석, 예는 `<영상>/storyboard/keys-example.json`). 에이전트 없이 Claude가 쓴다. 표에 없는 낙서도 cue 말에 저절로 그려지므로 움직이는 칸만 적는다.
    - 움직임 틀은 제한이 아니라 자주 쓰는 동작을 빠르게 조합하는 부품이다. 주제와 대본에 맞는 연출이 부품에 없으면 줄이지 말고 `<영상>/compositions/moves.py`에 몇 줄짜리 `@action("이름")`으로 더해 표에서 쓴다(예: `shake`, `spin`, `pulse`). 그래도 안 되는 무대만 첫 장면에 `"script"`를 적고 M3에서 손 스크립트로 짠다.
-   - 거친 움직임 정지 시트(`motion-<장면 id>.json`)는 만들지 않는다. 애니메틱이 대신한다.
-4. **애니메틱을 만들고 스스로 맞춰 본다.** Skill `hyperframes`와 `hyperframes-cli`를 먼저 부른다(SKILL.md "HyperFrames 스킬"). `<영상>`에서 `python compositions/keys.py --animatic` → `.harness/animatic/`(떨림 없음, 글자·엔딩 없음, 나레이션·곡 있음, 왼쪽 위에 장면 이름). 1초 안팎이고, 출력의 줄마다 표 한 줄의 실제 시각이 나온다. 계획의 cue 시각들로 `.harness/animatic`에서 `npx hyperframes snapshot --at ...`을 찍어 모음(contact sheet)을 Read 하고, 계획과 다른 칸은 표 값을 고쳐 다시 돌린다.
+   - 움직임은 애니메틱 하나로 확인한다(예전 거친 움직임 정지 시트 `motion-<장면 id>.json`의 자리).
+4. **애니메틱을 만들고 스스로 맞춰 본다.** Skill `hyperframes`와 `hyperframes-cli`를 먼저 부른다([references/tools.md](../references/tools.md)). `<영상>`에서 `python compositions/keys.py --animatic` → `.harness/animatic/`(떨림 없음, 글자·엔딩 없음, 나레이션·곡 있음, 왼쪽 위에 장면 이름). 1초 안팎이고, 출력의 줄마다 표 한 줄의 실제 시각이 나온다. 계획의 cue 시각들로 `.harness/animatic`에서 `npx hyperframes snapshot --at ...`을 찍어 모음(contact sheet)을 Read 하고, 계획과 다른 칸은 표 값을 고쳐 다시 돌린다.
 5. **보이기 전 점검.** 애니메틱 모음, 낙서 시트, 움직임 계획을 SKILL.md "보이기 전 점검"에 돌린다(점검표 "그림"·"낙서 스토리보드" 절).
 6. **보이고 바로 넘어간다.** `active.py stage 4`를 부르고, 모음(이미지)과 `cd .harness/animatic && npx hyperframes preview`, 움직임 계획(칸 번호마다 한 줄), 빨간 펜으로 쓸 말(`red_words`)과 고른 까닭 한 줄을 보이고 PushNotification으로 알린다. "연출 의견이 있으면 시각을 붙여 주세요, 기다리지 않고 제작을 시작합니다"라고 붙인다. 이어서 기다리지 않고:
    - 첫 영상이면(답 없는 번호는 추천대로 정한다):
@@ -66,7 +66,7 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
 
 ## M3 — 제작 (단계 5)
 
-`<영상>/AGENTS.md`(HyperFrames 규칙)와 제작 기본값 문서의 "에이전트 운용"을 먼저 읽고, 이 세션에서 아직 부르지 않았으면 Skill `hyperframes`·`hyperframes-cli`를 부른다(SKILL.md "HyperFrames 스킬"). 레이어 에이전트 브리프에는 "작업 전에 Skill `hyperframes`를 부를 것"을 넣는다. 표·생성 스크립트로 안 되는 이름 붙은 효과는 손 스크립트 전에 Skill `hyperframes-registry`로 찾아본다.
+`<영상>/AGENTS.md`(HyperFrames 규칙)와 제작 기본값 문서의 "에이전트 운용"을 먼저 읽고, 이 세션에서 아직 부르지 않았으면 Skill `hyperframes`·`hyperframes-cli`를 부른다([references/tools.md](../references/tools.md)). 레이어 에이전트 브리프에는 "작업 전에 Skill `hyperframes`를 부를 것"을 넣는다. 표·생성 스크립트로 안 되는 이름 붙은 효과는 손 스크립트 전에 Skill `hyperframes-registry`로 찾아본다.
 
 레이어 html은 손으로 쓰지 않는다. 모두 생성 스크립트가 만들고, 고칠 때도 스크립트나 그 입력(`storyboard.json`, 낙서 설명, `video.json`)을 고쳐 다시 돌린다. 도구 설명의 원본은 `<영상>/README.md` "만드는 순서" 5~7과 각 스크립트 첫 주석이다. 시각은 모두 `narration/timing.json`에서 읽으므로, 다시 녹음하면 스크립트만 다시 돌린다.
 
@@ -80,8 +80,8 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
 
    에이전트 지시에는 담당 파일, 읽기만 할 파일(`video.json`, `narration/timing.json`, `narration/beats.json`(있으면), `storyboard/`, `doodles/`, `compositions/scene_kit.py`, `compositions/pen_chunks.py`), 하네스 폴더 `.harness/<이름>/`, 아래 3을 적는다. effort는 장면 레이어 `high`, 썸네일 `low`.
 3. **그림과 움직임은 장면마다 정한다(표가 먼저, 손 스크립트는 표로 안 되는 것만).** 도구가 정하는 것은 배치 검사, 펜으로 그려지는 방식, 표의 움직임 종류(`keys.py` 첫 주석)다.
-   - 낙서 모양은 영상마다의 낙서 설명(`<영상>/doodles/*.json`, 모음 낙서는 모음 json)에서 나온다. 씨앗은 M1의 순서로 고르고 규칙은 `doodles/rules.json` 그대로라서, 승인된 시트의 모양이 그대로 나온다.
-   - 움직임은 승인된 움직임 계획(장면 목록의 그 칸 `motion`)과 거친 움직임 시트(`storyboard/motion-<장면 id>.png`, 고른 안)대로, 적힌 cue 시각과 박에 맞춘다.
+   - 낙서 모양은 영상마다의 낙서 설명(`<영상>/doodles/*.json`, 모음 낙서는 모음 json)에서 나온다. 씨앗은 M1의 순서로 고르고 규칙은 `doodles/rules.json` 그대로라서, M1 시트의 모양이 그대로 나온다.
+   - 움직임은 M2의 움직임 계획(장면 목록의 그 칸 `motion`)과 애니메틱의 표(`cast`·`keys`)대로, 적힌 cue 시각과 박에 맞춘다.
    - **자주 바뀌는 값**: 표정·자세·자리·속도·박 수처럼 의견이 자주 오는 값은 스크립트 위쪽 상수 한 줄로 둔다(예: proxy-shorts `compositions/make_scene_how.py`의 자리 `SPOTS`, 바퀴당 박 수 `LAPS`). 그러면 의견 하나가 그 값 고치기와 그 장면 다시 만들기로 끝난다.
    - 장면만의 움직임(날아와 붙기, 잠듦·깨어남 같은 상태 변화, 옮겨 가기)은 그 장면 스크립트에서 `layer.js`로 GSAP 줄을 더해 만든다(예: spring-lazy-shorts `compositions/make_scene_a.py`의 날아와 붙는 꼬리표). scene_kit에 없는 움직임이라고 펜 그리기만으로 줄이지 않는다.
    - 같은 움직임이 두 영상에서 쓰이면 마무리 때 scene_kit으로 올리고 템플릿 `README.md` "바뀐 점"에 적는다(Claude가 한다).
