@@ -1,12 +1,14 @@
 """제작 속도 장부와 기준(2026-11-11 사용자: 목표 영상 하나 1시간, "작업이 느려지는 부분을 스스로 감시하고, 기준을 세워
 느려지면 즉시 빠른 방법으로 바꾸는 프로세스", "기준은 5분: AI가 하나의 작업을 5분 넘게 잡고 있으면 바로 더 빠른 방법으로").
-장부는 .scratch/<영상 이름>/pace.jsonl(진행 중 쇼츠, active.py).
+장부는 .scratch/<영상 이름>/pace.jsonl(진행 중 쇼츠, active.py). 연작을 세션마다 동시에 만들 때는 모든 명령에
+--video <영상>을 붙여 그 영상의 장부를 쓴다(단계는 active.py 동시 진행 목록, 없으면 명세 Stage 줄).
 
     python .claude/skills/shorts/scripts/pace.py start "<일>" --kind <종류>   # 일 시작(종류는 FIX의 키)
     python .claude/skills/shorts/scripts/pace.py alarm                       # 백그라운드로: 그 일이 5분을 넘기면 "!!"를 찍고 끝난다
     python .claude/skills/shorts/scripts/pace.py end ["메모"]                 # 가장 최근에 시작한 일 끝(알람도 조용히 끝난다)
     python .claude/skills/shorts/scripts/pace.py check                       # 5분 넘은 일·되풀이: "!!" 줄 + 바로 바꿀 것. 있으면 종료 코드 2
     python .claude/skills/shorts/scripts/pace.py report                      # 단계별·종류별 시간, 느린 일 다섯(회고용)
+    python .claude/skills/shorts/scripts/pace.py check --video xss-2-shorts  # 예: 동시 진행 중인 그 편의 장부만
 
 기준은 하나다: 일 하나가 LIMIT(5분)를 넘기면 느린 것. 그 순간(알람이 끝났다는 알림, 또는 check의 "!!") Claude는 그 줄의
 "바로 바꿀 것"으로 즉시 방법을 바꾸고 사용자에게 한 줄 알린다. 하던 긴 명령은 백그라운드로 넘기거나 멈추고, 에이전트는
@@ -38,13 +40,13 @@ FIX = {
     "애니메틱": "움직임은 표(keys)로만. 정지 움직임 시트를 따로 만들지 않는다. 표에 없는 동작은 moves.py 몇 줄",
     "레이어": "keys.py로 표의 무대를 한 번에. 손 스크립트는 표로 안 되는 무대만, 그것도 파일마다 에이전트 하나로 동시에",
     "의견": "연출 의견은 에이전트 없이 표 값 고치기 + keys.py --only <장면>. 의견은 목록으로 모아 장면별로 동시에",
-    "검사": "check_parallel.py 기본(사건 시각만, 대비·craft 없이, 캐시)으로 바뀐 구간(--range)만. --full은 렌더 직전 한 번. 렌더·Studio가 안 돌면 --parts 6으로 더 쪼갠다(12코어, 기본 3에 머물러 기다리지 않는다)",
-    "렌더": "렌더 로그에 'falls back to screenshot capture ... too little memory'가 있으면 메모리 부족이다: 같이 도는 검사·snapshot·Studio를 멈추거나 끝난 뒤로 미룬다(2026-11-11 transaction: --full 검사 브라우저 3개와 겹쳐 렌더 약 10분, 느린 스크린샷 캡처). 전체 검사 --full은 6단계 끝(미리보기 의견을 다 고친 직후)에 돌려 7단계 렌더는 혼자 돈다. 옵션은 기본 그대로(--gpu·조각 방식 HF_SEGMENTED_CAPTURE는 측정에서 더 느렸다: 기본 167초 vs 209·311초). 진행 중 렌더는 남은 시간이 다시 찍는 시간보다 짧으면 두고 원인만 고친다",
-    "에이전트": "파일이 겹치지 않게 나눠 동시에, effort를 낮추고(값 고치기 medium, 생성·실행 low), 길어지면 인계 메모로 바꾼다",
+    "검사": "제작 기본값 '검사'(docs/agents/shorts-defaults.md)를 다시 읽고 지금 돌리는 검사를 그 절에 맞춘다: 바뀐 구간만 보는지, --full을 렌더 직전 한 번만 하는지, 비어 있는 코어를 쓰는지",
+    "렌더": "렌더 로그에 'falls back to screenshot capture ... too little memory'가 있으면 메모리 부족이다: 같이 도는 검사·snapshot·Studio를 멈추거나 끝난 뒤로 미룬다(2026-11-11 transaction: --full 검사 브라우저 3개와 겹쳐 렌더 약 10분, 느린 스크린샷 캡처). 전체 검사 --full이 끝난 뒤 렌더가 혼자 돌게 한다(순서는 제작 기본값 '검사'와 complete C1). 옵션은 기본 그대로(--gpu·조각 방식 HF_SEGMENTED_CAPTURE는 측정에서 더 느렸다: 기본 167초 vs 209·311초). 진행 중 렌더는 남은 시간이 다시 찍는 시간보다 짧으면 두고 원인만 고친다",
+    "에이전트": "파일이 겹치지 않게 나눠 동시에, effort를 제작 기본값 '토큰 아끼기'의 표대로 낮추고, 길어지면 인계 메모로 바꾼다",
     "명령": "2분 넘는 명령은 백그라운드로 돌리고 기다리는 동안 다른 일을 한다",
     "썸네일": "썸네일은 make_thumbnail.py 한 번, 시안은 --out drafts로 한 장씩. 기준 테스트로 확인",
     # 2026-11-11 transaction-shorts 회고(7.7시간): 시간은 일 하나보다 '판'(같은 것을 다시 보이기)에서 샜다.
-    "곡": "곡은 하나씩 맞추지 말고 후보 3곡을 '개념의 특성 = 곡의 짜임' 한 줄씩과 함께 30초 시험 판으로 한 번에 들려주고 고르게 한다. 고른 곡만 대본 길이에 맞춘다",
+    "곡": "곡은 하나씩 맞추지 말고 맞는 후보(1~3곡)를 '개념의 특성 = 곡의 짜임' 한 줄씩과 함께 기획안에서 20~30초 샘플로 한 번에 들려주고 고르게 한다(start.md S5 '곡 추천'). 고른 곡만 대본 길이에 맞춘다",
     "시안": "시안이 두 번 퇴짜면 같은 축으로 또 그리지 말고, 지난 쇼츠 문법(주인공 사물 가운데 크게)과 사물·성격·화풍 축을 나눈 후보 3개를 한 장에 나란히 낸다",
     "깜빡임": "눈으로 찾지 말고 상태가 바뀌는 시각마다 앞뒤 0.1초 snapshot을 한 번에 찍어 비교한다. 고친 뒤엔 그 시각들만 다시 찍는다",
 }
@@ -55,10 +57,15 @@ class PaceError(Exception):
     pass
 
 
-def _ledger(root=ROOT):
-    cur = active.show(root)
-    if not cur:
-        raise PaceError("진행 중 쇼츠가 없다(active.py start)")
+def _ledger(root=ROOT, video=None):
+    if video is None:
+        cur = active.show(root)
+        if not cur:
+            raise PaceError("진행 중 쇼츠가 없다(active.py start)")
+    else:
+        cur = active.show(root, video) or active.spec_stage(root, video)
+        if not cur:
+            raise PaceError(f"{video}이(가) 진행 목록에도 명세에도 없다(active.py start {video} --parallel)")
     return Path(root) / ".scratch" / cur["name"] / "pace.jsonl", cur
 
 
@@ -74,15 +81,15 @@ def _append(path, rec):
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-def start(step, kind, root=ROOT, now=None):
+def start(step, kind, root=ROOT, now=None, video=None):
     if kind not in FIX:
         raise PaceError(f"종류 {kind!r}가 없다(있는 것: {', '.join(FIX)})")
-    path, cur = _ledger(root)
+    path, cur = _ledger(root, video)
     _append(path, {"t": time.time() if now is None else now, "ev": "start", "step": step, "kind": kind, "stage": cur["stage"]})
 
 
-def end(note="", root=ROOT, now=None):
-    path, _ = _ledger(root)
+def end(note="", root=ROOT, now=None, video=None):
+    path, _ = _ledger(root, video)
     open_ = _open_steps(_read(path))
     if not open_:
         raise PaceError("끝낼 일이 없다(pace.py start 먼저)")
@@ -118,9 +125,9 @@ def spans(recs, now=None):
     return out
 
 
-def check(root=ROOT, now=None):
+def check(root=ROOT, now=None, video=None):
     """기준을 넘은 것마다 "!!" 줄(바로 바꿀 것 포함). 없으면 빈 목록."""
-    path, cur = _ledger(root)
+    path, cur = _ledger(root, video)
     recs = _read(path)
     sp = spans(recs, now)
     out = []
@@ -137,9 +144,9 @@ def check(root=ROOT, now=None):
     return out
 
 
-def alarm(root=ROOT, poll=POLL, clock=time.time, sleep=time.sleep):
+def alarm(root=ROOT, poll=POLL, clock=time.time, sleep=time.sleep, video=None):
     """가장 최근에 시작한 일이 LIMIT를 넘기면 "!!" 줄을 돌려준다(끝나면 None). 백그라운드로 돌려 그 순간 알림을 받는다."""
-    path, _ = _ledger(root)
+    path, _ = _ledger(root, video)
     open_ = _open_steps(_read(path))
     if not open_:
         raise PaceError("지켜볼 일이 없다(pace.py start 먼저)")
@@ -154,8 +161,8 @@ def alarm(root=ROOT, poll=POLL, clock=time.time, sleep=time.sleep):
         sleep(poll)
 
 
-def report(root=ROOT, now=None):
-    path, cur = _ledger(root)
+def report(root=ROOT, now=None, video=None):
+    path, cur = _ledger(root, video)
     sp = spans(_read(path), now)
     lines = [f"{cur['name']} 속도 (목표 {TOTAL}분)"]
     by_stage, by_kind = {}, {}
@@ -181,22 +188,24 @@ def main(argv=None):
     sub.add_parser("check")
     sub.add_parser("alarm")
     sub.add_parser("report")
+    for p in sub.choices.values():
+        p.add_argument("--video", help="이 영상의 장부(없으면 active.py 진행 중 쇼츠)")
     a = ap.parse_args(argv)
     try:
         if a.cmd == "start":
-            start(a.step, a.kind)
+            start(a.step, a.kind, ROOT, video=a.video)
         elif a.cmd == "end":
-            end(a.note)
+            end(a.note, ROOT, video=a.video)
         elif a.cmd == "alarm":
-            msg = alarm()
+            msg = alarm(ROOT, video=a.video)
             print(msg or "기준 안에 끝남")
             sys.exit(2 if msg else 0)
         elif a.cmd == "check":
-            bad = check()
+            bad = check(ROOT, video=a.video)
             print("\n".join(bad) if bad else "기준 안")
             sys.exit(2 if bad else 0)
         else:
-            print("\n".join(report()))
+            print("\n".join(report(ROOT, video=a.video)))
     except PaceError as err:
         raise SystemExit(str(err))
 

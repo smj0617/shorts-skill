@@ -88,7 +88,7 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
    - 같은 움직임이 두 영상에서 쓰이면 마무리 때 scene_kit으로 올리고 템플릿 `README.md` "바뀐 점"에 적는다(Claude가 한다).
 4. **화면 글자는 장면 레이어가 다 나온 뒤에.** `<영상>`에서 `python compositions/make_words.py` → `compositions/words.html`(z 5). 장면 레이어 html의 낙서 자리를 읽어 목차·핵심 키워드·이름표를 놓는다. `!!`로 시작하는 줄은 이름표 자리가 모자란다는 뜻이니 그 장면의 `layout`을 고쳐 장면 레이어부터 다시 돌린다. 장면 레이어를 다시 만들면 이것도 다시 돌린다.
    - 사용자 몫 앞당기기(SKILL.md "기다리는 시간 채우기"): 레이어 에이전트를 띄운 직후 게시 정보 초안(`publish.draft.json`)과 썸네일 시안을 보이고 의견을 받는다.
-5. **루트 통합은 Claude 혼자 한다.** 장면이 루트에 들어가 6~7의 맞춰 보기·점검을 통과하면 그 장면만 바로 보인다(SKILL.md "기다리는 시간 채우기", Studio 바로가기는 `review_links.py`). 그 장면 의견은 M4 표대로 바로 고친다. 레이어가 끝나는 대로 `host:` 줄을 `narration/template.html`의 host 자리에 끼우고(words 줄 포함) `python narration/build.py`, 그 장면의 가벼운 검사 `python .claude/skills/shorts/scripts/check_parallel.py <영상> --range a,b`(표의 사건 시각만, 대비·craft 없이, 캐시, 동시 3개). 모든 레이어와 words가 끝나면 같은 명령을 `--range` 없이 한 번(사건 시각 전체). 대비·craft까지 보는 `--full`은 렌더 직전(complete C1)에만 한다(`npm run check`를 한 번에 돌리지 않는다).
+5. **루트 통합은 Claude 혼자 한다.** 장면이 루트에 들어가 6~7의 맞춰 보기·점검을 통과하면 그 장면만 바로 보인다(SKILL.md "기다리는 시간 채우기", Studio 바로가기는 `review_links.py`). 그 장면 의견은 M4 표대로 바로 고친다. 레이어가 끝나는 대로 `host:` 줄을 `narration/template.html`의 host 자리에 끼우고(words 줄 포함) `python narration/build.py`, 그 장면의 가벼운 검사 `python .claude/skills/shorts/scripts/check_parallel.py <영상> --range a,b`. 모든 레이어와 words가 끝나면 같은 명령을 `--range` 없이 한 번. 검사 규칙(옵션, 동시 수, `--full`을 언제 하는지)은 제작 기본값 "검사"가 원본이다.
 6. **시트와 움직임 계획에 맞춰 본다.** 장면마다 핵심 순간을 움직임 계획의 cue 시각에 `npx hyperframes snapshot --at ...`으로 6장 안팎 찍어 시트의 칸과 계획의 사건에 비교한다. 다른 곳은 그 레이어 에이전트에게 돌려보낸다.
 7. **보이기 전 점검.** 그 snapshot과 장면 파일을 SKILL.md "보이기 전 점검"에 돌린다(점검표 "미리보기" 절). 걸린 곳도 그 레이어 에이전트에게 돌려보낸다.
 
@@ -105,7 +105,7 @@ M3 완료: `check_parallel.py <영상>` 오류 0, `make_words.py`에 `!!` 줄이
    - 여러 장면이 함께 쓰는 것(`video.json`, 모음 낙서, `make_words.py`, 루트 `build.py`)은 장면 고침이 다 끝난 뒤 Claude가 한 번에 고치고 돌린다.
    - 목록 뒤에 따로 온 의견은 그 장면의 묶음에 더한다(그 에이전트가 돌고 있으면 그 에이전트에게 보낸다).
    - 맡기기 전에 목록에서 가리키는 대상이 둘일 수 있는 의견은 한 줄로 되묻고, 취향 의견(더 보기 좋게, 더 역동적으로)은 2~3안으로 낸다(제작 기본값 "묻는 것과 정하는 것"). 나머지 묶음은 기다리지 않고 맡긴다.
-3. **대사 의견은 모아서 다시 녹음한다.** 대사를 고치는 의견은 대본(`narration/script.json`)과 의견 목록에 적고, 목록의 대사 의견을 모아 `python tts_budget.py --need 1`을 확인한 뒤 `PY make_tts.py <장면 id> <장면 id> ...`로 요청 1회에 다시 녹음한다(백그라운드, 장면 고침과 동시에). 녹음이 끝나면 `make_timeline.py`, `build.py`, 장면 레이어와 `make_words.py`를 다시 돌린다. 하루 2회 계획(S3)을 넘을 것 같으면 먼저 알린다.
+3. **대사 의견은 모아서 다시 녹음한다.** 대사를 고치는 의견은 대본(`narration/script.json`)과 의견 목록에 적고, 목록의 대사 의견을 모아 `python tts_budget.py --need 1`을 확인하고, 다시 녹음할 장면의 대본으로 녹음 문턱([start.md](start.md) S6 "녹음" 3)을 거쳐 "네"를 받은 뒤 `PY make_tts.py <장면 id> <장면 id> ...`로 요청 1회에 다시 녹음한다(백그라운드, 장면 고침과 동시에). 녹음이 끝나면 `make_timeline.py`, `build.py`, 장면 레이어와 `make_words.py`를 다시 돌린다. 하루 2회 계획(S3)을 넘을 것 같으면 먼저 알린다.
 4. **검사는 모든 고침이 끝난 뒤에.** 돌고 있는 에이전트, 다시 녹음, 남은 고침이 모두 끝나면 바뀐 구간마다 가벼운 검사를 동시에 돌린다(제작 기본값 "검사"). 전체 검사는 렌더 직전(complete C1)에 한 번 한다. 오류가 0이면 고친 순간들의 snapshot을 보이기 전 점검(점검표 "미리보기" 절)에 돌린 뒤, 한 번에 보이고 "미리보기에서 확인해 주세요"라고 한다.
 5. 에이전트가 길어지면 제작 기본값 문서의 "에이전트 갱신(인계)"대로 인계 메모를 쓰고 바꾼다.
 6. 사용자가 다 봤다고 하면 SKILL.md "단계마다 새 세션"대로 넘긴다. 연 세션(또는 여기서 계속하는 이 세션)이 `/shorts complete`로 완성과 게시를 시작한다. 단계는 6에 둔다(7로는 complete 흐름이 넘긴다).

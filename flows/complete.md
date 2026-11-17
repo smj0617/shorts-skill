@@ -41,7 +41,7 @@
 
 1. **다시 쓸 렌더인지 본다.** `renders/final.mp4`가 있고 아래 명령이 아무것도 찍지 않으면 2~5를 건너뛰고 6으로 간다.
    `find <영상> -type f -newer <영상>/renders/final.mp4 -not -path '*/renders/*' -not -path '*/node_modules/*' -not -path '*/.harness/*' -not -path '*/handoff-notes/*' -not -name 'publish*.json'`
-2. **check**: 전체 검사 `python .claude/skills/shorts/scripts/check_parallel.py <영상> --full --parts 6`(구간별 동시, 대비·craft 켬, 캐시 없음; 제작 기본값 "검사"). 렌더·Studio가 돌지 않을 때라 동시 6개로 쪼갠다(12코어). 막을 일: CPU가 비어 있는데 기본 동시 수(3)로 검사를 돌리며 그 결과를 기다리는 것(transaction-shorts 2026-11-11: 렌더가 끝난 뒤에도 3개로 돌려 사용자가 "검사를 병렬로 실행하라고" 짚음). 오류 0.
+2. **check**: 전체 검사 `python .claude/skills/shorts/scripts/check_parallel.py <영상> --full --parts 6`(동시 수와 까닭은 제작 기본값 "검사"의 렌더 직전 줄). 오류 0.
 3. **연락 시트**: `npx hyperframes snapshot --at <시각들>`로 장면마다 핵심 순간과 `music.hits` 시각을 8~12장 찍고 모두 Read 한다. 볼 것: 잘린 글자, 쇼츠 안전 영역(하단 1/4, 오른쪽 120px) 침범, 낙서 스토리보드 칸과 다른 낙서, 빈 화면, 엔딩 로고. 문제가 있으면 [make.md](make.md) M4처럼 렌더 없이 고치고 2부터 다시 한다. 취향이 걸린 것만 사용자에게 번호 질문으로 묻는다. 7단계에 머문다.
 4. **렌더**: 시작 시각을 적어 두고 `<영상>`에서 `npx --yes hyperframes@0.8.209 render --quality delivery -o renders/final.mp4`를 백그라운드로 돌린다(Bash `run_in_background`, 또는 effort `low` 에이전트).
 5. **새 파일인지와 음량**: `renders/final.mp4`의 수정 시각이 4의 시작 시각보다 뒤다. `ffprobe`로 1080x1920과 길이를 본다. `ffmpeg -i <영상>/renders/final.mp4 -af ebur128 -f null -`의 통합 음량(I)이 약 −16 LUFS(±1 LU)다. 벗어나면 측정값과 함께 알리고 고친 뒤 다시 렌더한다.

@@ -9,7 +9,7 @@ Claude가 Chrome에서 한다.
 1. Chrome에서 `https://studio.youtube.com/channel/mine/music`를 연다(사용자의 Studio 로그인을 쓴다. 로그인 화면이 나오면 사용자에게 로그인해 달라고 하고 기다린다).
 2. 검색창("보관함 검색 또는 필터링")에 보관함 클래식 목록의 제목을 넣고 Enter. 같은 이름의 다른 사람 곡이 함께 나온다(예: Kevin MacLeod의 "Dance of the Sugar Plum Fairies"는 CC BY 곡이다). 제목에 "(by 작곡가)"가 붙고 아티스트·길이가 목록과 같은 줄만 받는다.
 3. 그 줄의 라이선스를 데이터로 확인한다. 줄 버튼의 설명 글은 CC 곡에도 "YouTube 오디오 보관함 라이선스"라고 붙어 있어 믿지 않는다. 페이지에서 `document.querySelector('ytmus-library-table').polymerController.__data.audioTracks`를 읽어 그 곡의 `licenseType`이 `CREATOR_MUSIC_LICENSE_TYPE_YOUTUBE`인지 본다(화면에서는 라이선스 칸 아이콘이 CC가 아니라 재생 모양). 아니면 받지 않고 알린다. 맞으면 그 줄의 "오프라인 저장" 버튼을 누른다. 몇 초 안에 다운로드 폴더에 `<제목> - <아티스트>.mp3`로 저장된다.
-4. `python music/songs.py record --title "<보관함 제목>" --composer "<작곡가 전체 이름>" --artist "<보관함 아티스트>" --license no-attribution`로 곡 목록에 적는다(다운로드 폴더에서 `music/`으로 옮긴다). `music/library-classical.md`의 받음 칸을 "받음"으로 고친다.
+4. `python music/songs.py record --title "<보관함 제목>" --composer "<작곡가 전체 이름>" --artist "<보관함 아티스트>" --license no-attribution`로 곡 목록에 적는다. 이 명령이 다운로드 폴더의 파일을 `music/`으로 옮기므로 먼저 손으로 옮기지 않는다(옮겨 두면 "곡 파일이 없다" 오류). `music/library-classical.md`의 받음 칸을 "받음"으로 고친다.
 5. 다 받으면 연 탭을 닫는다.
 6. Chrome을 쓸 수 없으면 사용자 할 일로 바꾼다: "오디오 보관함에서 <제목>을 받아 주세요. 다 받으면 '받았어'라고 알려 주세요." 한 곡씩 알리고, "받았어"가 오면 4를 한다.
 
@@ -26,7 +26,7 @@ Claude가 Chrome에서 한다.
 
 승인 뒤(S6) 고른 곡이 아직 곡 목록에 없을 때.
 
-- **보관함 클래식 곡인데 아직 안 받았으면**(샘플 없이 골랐을 때): 위 "보관함에서 받기"로 Claude가 받는다. 사용자가 그 곡(이름·크기를 적은 것)을 직접 고른 것, 또는 후보가 그 곡 하나인 기획안을 승인한 것이 받기 승인이다. 후보가 여럿인데 답이 없어 추천대로 정해진 곡이면 받기 전에 받을지 한 번 묻는다.
+- **보관함 클래식 곡인데 아직 안 받았으면**(샘플 없이 골랐을 때): 위 "보관함에서 받기"로 Claude가 묻지 않고 받는다(보관함 클래식 목록의 곡은 묻지 않고 받는다, 2026-11-15 사용자, start.md S5 "곡 추천" 6).
 - **Commons 후보**(S5에서 사용자가 고른 것): Claude가 받는다.
   1. `python music/find_music.py fetch "File:<파일 이름>" --title "<곡명>" --composer "<작곡가>" --performer "<연주자>"`. 받기 직전에 라이선스를 다시 읽고, 크기와 SHA-1을 대조하고, 증거를 `music/licenses/<이름>.json`에 남기고, 곡 목록에 기록한다.
   2. 라이선스가 바뀌어 멈추면 그렇다고 알리고 S5의 다른 후보를 고르게 한다.

@@ -69,6 +69,46 @@ class PaceTest(unittest.TestCase):
         with self.assertRaises(pace.PaceError):
             pace.end("", self.root)
 
+    def test_video_option_uses_that_videos_ledger_and_stage(self):
+        import active
+        active.start(self.root, "xss-2-shorts", parallel=True)
+        active.set_stage(self.root, 3, video="xss-2-shorts")
+        pace.start("곡 고르기", "곡", self.root, now=0, video="xss-2-shorts")
+        pace.start("demo 레이어", "레이어", self.root, now=0)        # 진행 중 쇼츠 장부는 따로
+        rec = json.loads((self.root / ".scratch" / "xss-2-shorts" / "pace.jsonl").read_text(encoding="utf-8"))
+        self.assertEqual((rec["step"], rec["stage"]), ("곡 고르기", 3))
+        self.assertEqual(len((self.root / ".scratch" / "demo-shorts" / "pace.jsonl").read_text(encoding="utf-8").splitlines()), 1)
+        self.assertIn("(진행 중)", pace.check(self.root, now=6 * 60, video="xss-2-shorts")[0])
+        self.assertIsNone(pace.alarm(self.root, clock=lambda: 60, sleep=lambda s: pace.end("", self.root, now=70, video="xss-2-shorts"),
+                                     video="xss-2-shorts"))
+        self.assertEqual(pace.check(self.root, now=6 * 60, video="xss-2-shorts"), [])
+        self.assertTrue(pace.report(self.root, now=100, video="xss-2-shorts")[0].startswith("xss-2-shorts 속도"))
+        with self.assertRaises(pace.PaceError):
+            pace.check(self.root, video="xss-9-shorts")
+
+    def test_video_option_falls_back_to_the_spec_stage_after_the_list(self):
+        spec = self.root / ".scratch" / "xss-1-shorts" / "spec.md"
+        spec.parent.mkdir(parents=True)
+        spec.write_text("Stage: 10. 게시 완료\n", encoding="utf-8")
+        self.assertEqual(pace.report(self.root, now=0, video="xss-1-shorts")[-1], "  합계 0.0분")
+
+    def test_cli_takes_video_on_every_command(self):
+        import active
+        active.start(self.root, "xss-2-shorts", parallel=True)
+        old = pace.ROOT
+        pace.ROOT = self.root
+        try:
+            pace.main(["start", "곡 고르기", "--kind", "곡", "--video", "xss-2-shorts"])
+            pace.main(["end", "메모", "--video", "xss-2-shorts"])
+            with self.assertRaises(SystemExit) as e:
+                pace.main(["check", "--video", "xss-2-shorts"])
+            self.assertEqual(e.exception.code, 0)
+            pace.main(["report", "--video", "xss-2-shorts"])
+        finally:
+            pace.ROOT = old
+        lines = (self.root / ".scratch" / "xss-2-shorts" / "pace.jsonl").read_text(encoding="utf-8").splitlines()
+        self.assertEqual([json.loads(ln)["ev"] for ln in lines], ["start", "end"])
+
 
 if __name__ == "__main__":
     unittest.main()
