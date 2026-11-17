@@ -20,7 +20,7 @@
 
 ## 열 단계
 
-사람이 멈춰 서는 곳은 굵게 적은 세 번(기획안, 미리보기, 게시 정보)과 녹음 직전 확인뿐이다. 나머지는 Claude가 이어 간다.
+사람이 멈춰 서는 곳은 굵게 적은 세 번(기획안, 미리보기, 게시 정보)과 녹음 직전 확인뿐이다. 나머지는 Claude가 이어 간다. 지금까지 쇼츠 11편을 이 흐름으로 만들며 스킬을 키웠다.
 
 | 단계 | 하는 일 | 누가 기다리나 |
 |---|---|---|
@@ -56,7 +56,7 @@
 | 지시서 | `SKILL.md`, `flows/` | 단계 순서, 언제 묻고 언제 넘어가나 | 흐름 자체를 바꿀 때만 |
 | 기본값·용어 | 작업 폴더의 `shorts-defaults.md`, `GLOSSARY.md` | 길이, 박자, 색, 말투 같은 채널 취향 | 가장 자주. 여기만 바꿔도 다른 채널 쇼츠가 된다 |
 | 기록 | `references/summary.md`, `history.md`, `character.md` | 다음 영상의 출발점 | 직접 고치기보다 `/shorts review`가 쌓게 둔다 |
-| 스크립트 | `scripts/` | 상태 기록, 시간 감시, 한도 | 매번 같아야 하는 것, 지시서로 두 번 어긴 것 |
+| 스크립트 | `scripts/`, 작업 폴더의 템플릿(`shorts-template/narration/tts_budget.py` 등) | 상태 기록, 시간 감시, 구간 병렬 검사, TTS 하루 한도 | 매번 같아야 하는 것, 지시서로는 자꾸 빠지는 것 |
 
 ## 이 스킬이 기대는 것 (이 저장소에는 없음)
 
@@ -73,17 +73,16 @@
 
 ![Compound 고리와 승격 사다리](docs/compound-loop.png)
 
-[compound engineering](https://every.to/guides/compound-engineering)의 Plan → Work → Review → **Compound** 고리를 따른다. 영상 하나를 만들고(Plan·Work), `/shorts review`로 돌아보고(Review), 배운 것을 스킬에 되먹인다(Compound).
+[compound engineering](https://every.to/guides/compound-engineering)의 Plan → Work → Review → **Compound** 고리를 따른다. 영상 하나를 만들고(Plan·Work), `/shorts review`로 돌아보고(Review), 배운 것을 스킬에 되먹인다(Compound). 되먹이는 순서는 `SKILL.md` "성장 고리"의 네 단계다.
 
-되먹일 때는 승격 사다리를 한 칸씩 오른다.
+1. **쌓기**: 만드는 동안 의견과 실패를 원본 기록(`references/history.md` 등)에 적는다.
+2. **추리기**: 게시 완료와 회고 때 다음 영상이 읽을 출발점(`summary.md`, 50줄 안)으로 추린다. 파일을 통째로 다시 쓰지 않고 줄 단위로 더하고 고친다. 통째로 다시 쓰면 세부가 깎여 나간다([ACE](https://arxiv.org/abs/2510.04618)의 context collapse).
+3. **올리기**: 같은 교훈이 두 영상에서 나오면 사용자 동의를 받아 규칙 문서로 올린다.
+4. **비우기**: 규칙이 된 줄은 출발점에서 빼고, 원본 기록에 올린 곳을 적는다.
 
-1. **메모**: 처음 겪은 일은 `references/history.md`에 영상별로 적는다.
-2. **지시서**: 두 영상에서 되풀이되면 `summary.md`(50줄 안)로 추리고, 그래도 되풀이되면 `SKILL.md`·`flows/`의 규칙으로 올린다.
-3. **스크립트·hook**: 규칙으로 올렸는데도 두 번 어기면 `scripts/`의 검사로 옮긴다. 지시서는 대체로 지켜지지만 매번은 아니고, 스크립트는 같은 입력이면 늘 같다.
+규칙으로 올려도 매번 지켜지지는 않는다. Claude Code 문서도 지시서는 "대부분 통하지만 매번은 아니다"라고 한다([best practices](https://code.claude.com/docs/en/best-practices)). 그래서 매번 같아야 하는 것은 한 칸 더 올려 스크립트로 막는다. TTS 하루 한도(`tts_budget.py`, 요청 전에 장부에 적고 넘으면 보내지 않음)와 구간 병렬 검사(`scripts/check_parallel.py`)가 이렇게 옮긴 것이다. 아직 hook은 쓰지 않는다.
 
-추릴 때는 파일을 통째로 다시 쓰지 않고 줄 단위로 더하고 고친다. 통째로 다시 쓰면 세부가 깎여 나간다([ACE](https://arxiv.org/abs/2510.04618)의 context collapse).
-
-같은 규칙은 한 곳에만 둔다. 두 곳에 있으면 한쪽만 고쳐져 서로 어긋나고, 규칙이 충돌하면 Claude는 아무 쪽이나 고른다.
+같은 규칙은 한 곳에만 두고, 새 규칙을 올릴 때 부딪히는 옛 규칙도 함께 지운다. 두 지시가 모순되면 Claude는 아무 쪽이나 고를 수 있다([memory](https://code.claude.com/docs/en/memory)).
 
 정답이 없는 취향(캐릭터, 썸네일)은 규칙으로 정하지 않는다. 시안마다 사용자 반응을 경우의 수 표에 쌓고, 통한 것만 `character.md`로 추려 다음 시안의 출발점을 옮긴다. 마지막 선택은 사람이 한다.
 
