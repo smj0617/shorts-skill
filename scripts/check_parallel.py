@@ -10,7 +10,7 @@
   기본(고치는 중): 사건 시각에서만 본다(--at). 사건 시각은 compositions/keys.py가 남긴 .harness/check-times.json
                   (표의 줄 시각), 없으면 timing.json 문장마다 시작·가운데. --no-craft --no-contrast --cache --budget 120s.
   --full:         장면 경계로 자른 구간(--range)마다 기본 표본 + 대비 + craft, 캐시 없이.
-  --parts N       동시 수(기본 3).  --range a,b 여러 번: 그 구간만(바뀐 구간만 다시 볼 때, 그 구간의 사건 시각만).
+  --parts N       동시 수(기본: --range 있으면 3, 없으면 6).  --range a,b 여러 번: 그 구간만(바뀐 구간만 다시 볼 때, 그 구간의 사건 시각만).
   --cli           검사 CLI(기본 CHECK_CLI). craft·cache·budget은 0.9 판부터 있어 렌더용 고정 판(package.json)과 따로 둔다.
                   "pinned"면 npm run check(고정 판). 그 판이 모르는 옵션은 빼고 무엇을 뺐는지 알린다.
   -- 뒤:          check에 그대로 넘길 인자.
@@ -25,8 +25,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-CHECK_CLI = "hyperframes@0.9.30"
-PARTS = 3
+CHECK_CLI = "hyperframes@0.9.85"   # 0.9.30은 2026-11-23 Chrome을 못 띄움(장면 에이전트 셋이 모두 0.9.85로 돌림)
+PARTS = 3          # --range로 바뀐 구간만 볼 때
+WHOLE_PARTS = 6    # --range 없는 전체(가벼운 전체·--full): 12코어라 6갈래(2026-11-23 사용자: "전체검사 할 때도 구간별로 나눠서 병렬로 … 왜 안 지켜")
 LIGHT = ["--no-craft", "--no-contrast", "--cache", "--budget=120s"]
 FULL = ["--contrast", "--craft", "--no-cache"]
 
@@ -75,7 +76,7 @@ def keep_known(args, known):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("video")
-    ap.add_argument("--parts", type=int, default=PARTS)
+    ap.add_argument("--parts", type=int, default=None)
     ap.add_argument("--full", action="store_true", help="렌더 직전 전체 검사(구간마다 대비·craft)")
     ap.add_argument("--light", action="store_true", help="(예전 이름) 기본과 같다")
     ap.add_argument("--range", action="append", default=[])
@@ -85,6 +86,8 @@ def main():
     vid = Path(a.video).resolve()
     timing = json.loads((vid / "narration" / "timing.json").read_text(encoding="utf-8"))
     ranges = [tuple(float(x) for x in r.split(",")) for r in a.range]
+    if a.parts is None:
+        a.parts = PARTS if ranges else WHOLE_PARTS
     if a.full:
         jobs = [(f"{lo:g}-{hi:g}", ["--range", f"{lo},{hi}"]) for lo, hi in (ranges or cut(timing, a.parts))]
         base = FULL
