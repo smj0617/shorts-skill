@@ -172,6 +172,52 @@ class ActiveTest(unittest.TestCase):
             "xss-2-shorts: 3. 곡 받기와 녹음",
         ])
 
+    def _cli(self, *argv):
+        import contextlib
+        import io
+        out = io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
+        old = active.ROOT
+        active.ROOT = self.root
+        try:
+            with contextlib.redirect_stdout(out):
+                code = active.main(list(argv))
+        finally:
+            active.ROOT = old
+        out.flush()
+        return code, out.buffer.getvalue().decode("utf-8")
+
+    def _fake_audit(self, body):
+        script = self.root / active.RULE_AUDIT
+        script.parent.mkdir(parents=True, exist_ok=True)
+        script.write_text(body, encoding="utf-8")
+
+    def test_publishing_prints_rule_audit_summary(self):
+        active.start(self.root, "xss-1-shorts")
+        self._fake_audit("import sys\nsys.stdout.reconfigure(encoding='utf-8')\nprint('알림: 검사 시점 2번')\n")
+        code, out = self._cli("stage", "게시 완료")
+        self.assertEqual(code, 0)
+        self.assertIn("알림: 검사 시점 2번", out)
+        self.assertEqual(active.show(self.root)["stage"], 10)
+
+    def test_other_stages_do_not_run_rule_audit(self):
+        active.start(self.root, "xss-1-shorts")
+        self._fake_audit("print('불리면 안 됨')\n")
+        code, out = self._cli("stage", "9")
+        self.assertEqual((code, out), (0, ""))
+
+    def test_publishing_works_without_or_with_broken_rule_audit(self):
+        active.start(self.root, "xss-1-shorts")
+        active.start(self.root, "xss-2-shorts", parallel=True)
+        self.assertEqual(self._cli("stage", "10"), (0, ""))  # 스크립트 없음
+        self._fake_audit("raise SystemExit('깨짐')\n")
+        self.assertEqual(self._cli("stage", "10", "--video", "xss-2-shorts"), (0, ""))
+        self.assertEqual(active.spec_stage(self.root, "xss-2-shorts")["stage"], 10)
+
+    def test_slow_rule_audit_times_out_without_blocking_the_stage(self):
+        active.start(self.root, "xss-1-shorts")
+        self._fake_audit("import time\ntime.sleep(5)\nprint('늦음')\n")
+        self.assertEqual(active.rule_audit_summary(self.root, wait=0.5), "")
+
 
 if __name__ == "__main__":
     unittest.main()

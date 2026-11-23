@@ -18,12 +18,15 @@
 start --parallel은 명세가 이미 있으면 그 Stage 단계로, 없으면 1. 기획으로 더한다(보류 목록에 있던 편은 거기서 뺀다).
 동시 진행 목록에서 10. 게시 완료가 된 편은 목록에 "게시 완료"로 남아 있다가 다음 start --parallel 때 빠진다
 (빠진 뒤에도 명세 Stage 줄은 남으므로 pace.py --video report는 그대로 된다).
+stage로 10. 게시 완료가 되면 규칙 집계(.claude/hooks/rule_audit.py)를 돌려 요약·알림을 덧붙여 출력한다.
+집계가 없거나 실패·시간 초과여도 단계 바꾸기는 그대로다(절차 원본: SKILL.md "규칙이 안 지켜질 때").
 여러 세션이 거의 동시에 고쳐도 다른 편 기록이 날아가지 않게, 고치기는 잠금 파일(.scratch/shorts-active.lock) 안에서
 읽고-고치고-쓰기를 한 번에 하고, 쓰기는 임시 파일을 만든 뒤 원자적으로 바꿔 끼운다.
 """
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 from contextlib import contextmanager
@@ -45,6 +48,8 @@ STAGES = (
 STAGE_LINE = re.compile(r"^Stage: (\d+)\. .*$")
 LOCK_WAIT = 10      # 잠금을 기다리는 최대 시간(초)
 LOCK_STALE = 30     # 이보다 오래된 잠금 파일은 죽은 세션이 남긴 것으로 보고 지운다(초)
+RULE_AUDIT = Path(".claude") / "hooks" / "rule_audit.py"
+RULE_AUDIT_WAIT = 120  # 규칙 집계를 기다리는 최대 시간(초)
 
 
 class ActiveError(Exception):
@@ -241,6 +246,19 @@ def set_stage(root, stage, video=None):
         _write_spec_stage(root, entry["name"], number)
 
 
+def rule_audit_summary(root=ROOT, wait=RULE_AUDIT_WAIT):
+    """규칙 집계 요약·알림. 스크립트가 없거나 실패·시간 초과면 빈 문자열(단계 바꾸기와 무관)."""
+    script = Path(root) / RULE_AUDIT
+    if not script.exists():
+        return ""
+    try:
+        done = subprocess.run([sys.executable, str(script), "--root", str(root)], cwd=str(root), capture_output=True,
+                              encoding="utf-8", errors="replace", timeout=wait)
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return done.stdout.strip() if done.returncode == 0 else ""
+
+
 def _line(entry):
     return f"{entry['name']}: {entry['stage']}. {entry['stage_name']}"
 
@@ -275,6 +293,10 @@ def main(argv):
             start(ROOT, args[0], parallel=is_parallel)
         elif command == "stage" and len(args) == 1 and not is_parallel:
             set_stage(ROOT, args[0], video)
+            if _stage_number(args[0]) == len(STAGES):
+                summary = rule_audit_summary(ROOT)
+                if summary:
+                    print("규칙 집계(.scratch/rule-stats.md):\n" + summary)
         elif command == "hold" and not args and not is_parallel:
             hold(ROOT, video)
         else:
