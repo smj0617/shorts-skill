@@ -41,7 +41,7 @@
 
 | 경로 | 내용 |
 |---|---|
-| `SKILL.md` | 진입점: 분기, 단계 열 개, 그릴링 역할, 성장 고리, 모든 흐름에 걸리는 규칙 |
+| `SKILL.md` | 진입점: 모든 흐름에 걸리는 규칙(맨 위), 분기, 단계 열 개, 그릴링 역할, 성장 고리 |
 | `flows/` | 흐름별 절차: 시작(start), 그릴링(grill), 제작(make), 완성과 게시(complete), 회고(review), 상태(status) |
 | `references/` | 영상마다 자라는 출발점: 교훈 요약(summary), 영상별 회고(history), 캐릭터(character). 가끔 가는 절차: 도구 스킬(tools), 곡 받기(music) |
 | `scripts/` | 상태 기록 도우미(active), 속도 감시(pace), 구간 병렬 검사(check_parallel)와 테스트 |
