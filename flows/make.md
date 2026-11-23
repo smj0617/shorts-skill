@@ -71,7 +71,7 @@ S6이 끝나면 녹음 시각(`narration/timing.json`)과 곡(`assets/bgm.mp3`)�
 
 레이어 html은 손으로 쓰지 않는다. 모두 생성 스크립트가 만들고, 고칠 때도 스크립트나 그 입력(`storyboard.json`, 낙서 설명, `video.json`)을 고쳐 다시 돌린다. 도구 설명의 원본은 `<영상>/README.md` "만드는 순서" 5~7과 각 스크립트 첫 주석이다. 시각은 모두 `narration/timing.json`에서 읽으므로, 다시 녹음하면 스크립트만 다시 돌린다.
 
-1. **뼈대와 미리보기.** `<영상>/narration`에서 `python make_timeline.py`, `<영상>`에서 `python narration/build.py`(`index.html`, 종이 `compositions/paper.html`, 엔딩 `compositions/ending.html`을 만든다), 그다음 `npx hyperframes preview --background`. 주소를 적어 두고 끝날 때까지 켜 둔다. 움직임 계획에 박에 맞출 칸이 있으면 박 시각 `narration/beats.json`도 이때 만든다(만든 법은 `proxy-shorts/narration/beats.json`의 `_`).
+1. **뼈대와 미리보기.** `<영상>/narration`에서 `python make_timeline.py`, `<영상>`에서 `python narration/build.py`(`index.html`, 종이 `compositions/paper.html`, 엔딩 `compositions/ending.html`을 만든다), 그다음 `npx hyperframes preview --background`(탭을 스스로 연다. 따로 열지 않는다). 주소를 적어 두고 끝날 때까지 켜 둔다. 움직임 계획에 박에 맞출 칸이 있으면 박 시각 `narration/beats.json`도 이때 만든다(만든 법은 `proxy-shorts/narration/beats.json`의 `_`).
 2. **장면 레이어는 먼저 표로.** `python compositions/keys.py`가 M2 애니메틱의 표(`cast`·`keys`)로 장면 레이어를 모두 만든다(`compositions/scene-<무대 첫 장면>.html`과 `host:` 줄, 떨림 있음). 무대(`"continue": true`로 이어진 장면)마다 레이어 하나다. 상태 바꾸기, 줌·클로즈업, 되감기, 박에 튀기, 등장·퇴장, 덧붙이기·깜빡임은 표로 된다. 표로 안 되는 움직임이 있는 무대만 첫 장면에 `"script": "make_scene_<x>.py"`를 적고 아래처럼 에이전트에게 맡긴다(그 스크립트도 `kit.Family`로 상태 묶음을 쓴다). 두 영상에서 같은 손 움직임이 나오면 마무리 때 `keys.py`의 `do`로 올린다.
 
    손으로 짜는 무대는 장면(또는 이어진 장면 2~3개)마다 레이어 하나, 에이전트 하나다. 한 파일은 한 에이전트만 고친다.
